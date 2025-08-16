@@ -1,0 +1,410 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Acquisition Prediction - SalesInsight</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* From Uiverse.io by kennyotsu */
+        .container {
+            width: 100%;
+            height: 100%;
+            background-color: #313131;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.171) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+            min-height: 100vh;
+        }
+        .contain {
+            width: 100%;
+            min-height: 100vh;
+        }
+        .prediction-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .prediction-container h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .prediction-form {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .action-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #1F4B97;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s;
+        }
+        .action-button:hover {
+            background: #163a75;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1 1 calc(33.333% - 20px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(31, 75, 151, 0.15);
+            background: linear-gradient(to bottom right, #fff, #f8f9ff);
+        }
+        .card-icon {
+            font-size: 35px;
+            color: #1F4B97;
+            transition: transform 0.3s ease;
+        }
+        .card:hover .card-icon {
+            transform: scale(1.1);
+        }
+        .card-content {
+            flex-grow: 1;
+        }
+        .card-content h3 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+        .card:hover .card-content h3 {
+            color: #1F4B97;
+        }
+        .card-content p {
+            font-size: 24px;
+            margin: 0;
+            color: #222;
+            font-weight: bold;
+        }
+        .hint {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .card:hover .hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Add tooltip styling */
+        .card[title] {
+            cursor: help;
+        }
+        .card[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                bottom: -50px;
+            }
+        }
+        .chart-container {
+            margin-top: 40px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .chart-wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-wrapper h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .chart-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        /* Ensure navbar text is visible on dark background */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .action-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .action-button.print {
+            background-color: #222;
+            padding: 12px 25px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-button.download {
+            background-color: rgb(34, 93, 34);
+            padding: 12px 25px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-button i {
+            font-size: 18px;
+        }
+        
+        .download-section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="contain">
+            <div class="navbar">
+                <div class="sideimage">
+                    <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+                </div>
+                <center>
+                    <div class="centercontent">
+                        <a href="{% url 'home' %}"><h4>Home</h4></a>
+                        <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                        <a href="{% url 'segmentation' %}"><h4>Data Segmentation</h4></a>
+                        <a href="{% url 'help' %}"><h4>Help</h4></a>
+                        <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                    </div>
+                </center>
+                <div class="sidecontent">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <button class="Logout">Logout</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="login">Login</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="prediction-container">
+                <h1>Customer Acquisition Prediction</h1>
+
+                <form method="post" enctype="multipart/form-data" class="prediction-form">
+                    {% csrf_token %}
+                    <input type="file" name="csv_file" accept=".csv" required>
+                    <button type="submit" class="action-button">Upload & Analyze</button>
+                </form>
+
+                {% if analysis_complete %}
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div class="stats-container" style="max-width: 1000px; width: 100%;">
+                        <div class="card" title="The total number of customers in your dataset that were analyzed for potential conversion">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Total Customers</h3>
+                                <p>{{ stats.total_customers }}</p>
+                                <small class="hint">Total prospects analyzed in your dataset</small>
+                            </div>
+                        </div>
+                        <div class="card" title="Percentage of customers who responded positively to the marketing campaign">
+                            <div class="card-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Response Rate</h3>
+                                <p>{{ stats.response_rate }}%</p>
+                                <small class="hint">Customers who accepted the offer</small>
+                            </div>
+                        </div>
+                        <div class="card" title="How accurate our model is at predicting customer responses">
+                            <div class="card-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Model Accuracy</h3>
+                                <p>{{ stats.model_accuracy }}%</p>
+                                <small class="hint">Overall prediction accuracy</small>
+                            </div>
+                        </div>
+                        <div class="card" title="How well the model identifies positive responses (True Positive Rate)">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Sensitivity</h3>
+                                <p>{{ stats.sensitivity }}%</p>
+                                <small class="hint">Accuracy in finding interested customers</small>
+                            </div>
+                        </div>
+                        <div class="card" title="How well the model identifies negative responses (True Negative Rate)">
+                            <div class="card-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Specificity</h3>
+                                <p>{{ stats.specificity }}%</p>
+                                <small class="hint">Accuracy in identifying non-interested customers</small>
+                            </div>
+                        </div>
+                        <div class="card" title="Overall performance measure of the model (1.0 is perfect prediction)">
+                            <div class="card-icon">
+                                <i class="fas fa-chart-area"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>AUC Score</h3>
+                                <p>{{ stats.auc_score }}</p>
+                                <small class="hint">Overall model performance (0-1 scale)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid" style="margin: 40px 0;">
+                    <div class="chart-wrapper">
+                        <h3>Gain Chart</h3>
+                        <p style="text-align: center; color: #444; font-size: 1.05em; margin-bottom: 10px;">
+                            <strong>What is a Gain Chart?</strong><br>
+                            The gain chart shows how many positive responses (like customer conversions) you can capture by targeting a certain percentage of your customers, ranked by the model's predictions. A steeper curve means the model is good at finding the best customers first. For example, if you target the top 50% of customers (as ranked by the model), you can capture {{ stats.gain_at_50 }}% of all positive responses.
+                        </p>
+                        <p style="text-align: center; margin-bottom: 20px;">At 50% targeting: {{ stats.gain_at_50 }}% customers captured</p>
+                        <img src="data:image/png;base64,{{ gain_chart }}" alt="Gain Chart">
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3>Lift Chart</h3>
+                        <p style="text-align: center; color: #444; font-size: 1.05em; margin-bottom: 10px;">
+                            <strong>What is a Lift Chart?</strong><br>
+                            The lift chart compares how much better your model is at finding positive responses compared to random targeting. A higher lift means your model is much better than guessing. For example, a lift of {{ stats.lift_at_50 }}x at 50% means you are {{ stats.lift_at_50 }} times more likely to find positive responses by using the model than by picking customers at random.
+                        </p>
+                        <p style="text-align: center; margin-bottom: 20px;">At 50% targeting: {{ stats.lift_at_50 }}x improvement</p>
+                        <img src="data:image/png;base64,{{ lift_chart }}" alt="Lift Chart">
+                    </div>
+                </div>
+
+                <div class="action-buttons-container" style="margin: 40px 0;">
+                    <button type="button" onclick="printdash()" class="action-button print">
+                        <i class="fas fa-print"></i>
+                        Print Report
+                    </button>
+                    <button type="button" onclick="scrndash()" class="action-button download">
+                        <i class="fas fa-download"></i>
+                        Download Report
+                    </button>
+                </div>
+
+                {% if download_available %}
+                <div class="download-section" style="margin: 40px auto; text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); max-width: 600px; width: 100%;">
+                    <h3 style="margin-bottom: 20px; color: #333;">Download High-Value Customers</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Found {{ high_value_count }} high-value customers out of {{ total_customers }} total customers</p>
+                    <a href="{% url 'download_high_value_customers' %}" class="btn" style="display: inline-block; padding: 12px 25px; background: #1F4B97; color: white; text-decoration: none; border-radius: 5px; transition: background 0.3s;">
+                        <i class="fas fa-download"></i> Download CSV
+                    </a>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/index.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        function printdash(){
+            print()
+        }
+
+        function scrndash() {
+            const targetDiv = document.querySelector('.prediction-container');
+            
+            html2canvas(targetDiv).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = imgData;
+                link.download = 'prediction-dashboard.png';
+                link.click();
+            }).catch(err => {
+                console.error('Failed to capture screenshot:', err);
+            });
+        }
+    </script>
+</body>
+</html>

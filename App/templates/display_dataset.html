@@ -1,0 +1,110 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <style>
+       
+
+    </style>
+</head>
+<body>
+    <h2>Dataset</h2>
+    <div style="padding: 25px;">{{ data|safe }}</div>
+    <a href="{% url 'generate_chart' %}">Visualize Data</a>
+</body>
+</html> -->
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset View - DataSegmentor</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="contain">
+            <div class="navbar">
+                <div class="sideimage">
+                    <h4 style="margin: 20px;">DataSegmentor</h4>
+                </div>
+                <center>
+                    <div class="centercontent">
+                        <a href="{% url 'home' %}"><h4>Home</h4></a>
+                        <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                        <a href="{% url 'segmentation' %}"><h4>Customer Segmentation</h4></a>
+                        <a href="{% url 'help' %}"><h4>Help</h4></a>
+                        <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                    </div>
+                </center>
+                <div class="sidecontent">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <button class="Logout">Logout</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="login">Login</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="log">
+                <center>
+                    <img src="{% static 'images/01_slider-background.jpg' %}" alt="" style="position: absolute;width: 100%;left: 0;">
+                </center>
+                <div style="position: relative;z-index: 10;">
+                  
+
+                    <div class="h1" style="margin-top: 10px;">
+                        <h1 style="font-weight: 500;font-size: 25px;">Easily Visualize Your Data</h1>
+                        <h4 style="opacity: 0.6; margin-top: 10px; font-weight: 400;font-size: 14px;">Upload your data file and generate insightful visualizations in one click!</h4>
+                    </div>
+
+                    <div class="shbt">
+                        <div class="sh" style="margin-top:30px"> 
+                            <h3 class="h3"><i class="fa-solid fa-check"></i> Intuitive </h3>
+                            <h3 class="h3"><i class="fa-solid fa-check"></i> Fast </h3>
+                            <h3 class="h3"><i class="fa-solid fa-check"></i> Secure </h3>
+                        </div>
+
+                        <div class="buttons">
+                            <button class="btn" style="margin-top:30px;font-weight: 400;background-color: rgb(47, 142, 110);">
+                                <a href="{% url 'generate_chart' %}" style="color: white;font-weight: 600;text-decoration: none;">Visualize Data</a>
+                            </button>
+                            <button class="btn" style="margin-top:30px;font-weight: 400;background-color: rgb(31, 75, 151);">
+                                <a href="{% url 'segmentation_result' %}" style="color: white;font-weight: 600;text-decoration: none;">Data Segmentation</a>
+                            </button>
+                            {% if next_page == 'segmentation' %}
+                            <a href="{% url 'segmentation' %}">
+                                <button class="btn" style="margin-top:30px;font-weight: 400;background-color: transparent;border: 1px solid rgb(238, 238, 238);color: black;">Back To Segmentation</button>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'home' %}">
+                                <button class="btn" style="margin-top:30px;font-weight: 400;background-color: transparent;border: 1px solid rgb(238, 238, 238);color: black;">Back To Homepage</button>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;position: relative;z-index: 100;width:95%;overflow-y: scroll;overflow-x: scroll;margin-left: 25px;border-radius: 8px;height: 500px;background-color: white;padding: 20px;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                {{ data|safe }}
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/index.js'%}"></script>
+</body>
+</html>
+

@@ -1,0 +1,577 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Banner Carousel Styles */
+        .banner-carousel {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .banner-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .banner-slide.active {
+            opacity: 1;
+        }
+
+        .banner-content {
+            max-width: 600px;
+            color: white;
+            position: relative;
+            z-index: 2;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+        }
+
+        .banner-slide.active .banner-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .banner-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .banner-slide:hover::before {
+            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .banner-content h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner-content p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .banner-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #1F4B97;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .banner-btn:hover {
+            background: transparent;
+            border-color: #1F4B97;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(31, 75, 151, 0.3);
+        }
+
+        .banner-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #1F4B97;
+            transform: scale(1.2);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            color: #1F4B97;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(31, 75, 151, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 60px 0 30px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: #1F4B97;
+        }
+
+        .footer-section p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: #1F4B97;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: #1F4B97;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #333;
+            color: #666;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .whitecards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .cookie-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cookie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .cookie-card .title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .cookie-card .description {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            font-size: 0.95em;
+        }
+
+        .cookie-card .actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cookie-card .pref {
+            border: none;
+            background: none;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .cookie-card .accept {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+            background-color: rgb(31, 75, 151);
+            color: white;
+            font-size: 0.95em;
+        }
+
+        .cookie-card .accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(31, 75, 151, 0.3);
+            background-color: rgb(25, 60, 121);
+        }
+
+        .inp {
+            margin-top: 5px !important;
+            padding: 6px !important;
+            width: 200px !important;
+            font-size: 0.9em !important;
+        }
+
+        /* From Uiverse.io by kennyotsu */
+        .pattern-section {
+            width: 100%;
+            min-height: auto;
+            background-color: #bebebe;
+            background-image: radial-gradient(rgba(5, 5, 5, 0.171) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+            padding: 30px 0;
+        }
+
+        .pattern-section .inputfield {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .pattern-section .inputfield h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .pattern-section .inputfield span {
+            color: #1F4B97;
+        }
+    </style>
+</head>
+<body>
+    <!-- <a href="{% url 'login' %}">Link Text</a> -->
+    <div class="container">
+        <div class="contain">
+        <div class="navbar">
+            <div class="sideimage">
+                
+                <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+            </div>
+            <center>
+                <div class="centercontent">
+                    <a href="{% url 'home' %}"><h4>Home</h4></a>
+                    <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                    <a href="{% url 'segmentation' %}"><h4>Customer Segmentation</h4></a>
+                    <a href="{% url 'help' %}"><h4>Help</h4></a>
+                    <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                </div>
+            </center>
+            <div class="sidecontent">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'logout' %}">
+                    <button class="Logout">Logout</button>
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}">
+                    <button class="login">Login</button>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="banner-carousel">
+            <!-- Customer Acquisition Prediction Slide -->
+            <div class="banner-slide active" style="background-image: url('{% static 'images/data-analytics-banner1.jpg' %}')">
+                <div class="banner-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>Predict Customer Success</h1>
+                    <p>Transform your customer acquisition strategy with our advanced ML-powered prediction system. Identify high-potential leads and optimize your conversion rates using cutting-edge analytics.</p>
+                    <ul style="list-style: none; margin-bottom: 20px; padding: 0;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> 90% accuracy in lead prediction</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> Reduce acquisition costs by 50%</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> Real-time insights dashboard</li>
+                    </ul>
+                    {% if not request.user.is_authenticated %}
+                    <a href="#" class="banner-btn" onclick="pop()">Start Predicting Now</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Data Segmentation Slide -->
+            <div class="banner-slide" style="background-image: url('{% static 'images/data-analytics-banner2.jpg' %}')">
+                <div class="banner-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h1>Smart Data Segmentation</h1>
+                    <p>Leverage advanced clustering algorithms and machine learning to segment your customer base with precision. Uncover hidden patterns and create targeted marketing strategies.</p>
+                    <ul style="list-style: none; margin-bottom: 20px; padding: 0;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> AI-powered clustering</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> Visual segment analysis</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #1F4B97; margin-right: 10px;"></i> Actionable insights</li>
+                    </ul>
+                    {% if not request.user.is_authenticated %}
+                    <a href="#" class="banner-btn" onclick="pop()">Explore Segmentation</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Navigation Dots -->
+            <div class="banner-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        <script>
+            // Banner Carousel functionality
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('.dot');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            // Add click events to dots
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    showSlide(currentSlide);
+                });
+            });
+
+            // Auto-rotate slides
+            setInterval(nextSlide, 5000);
+
+            // Pause rotation on hover
+            const carousel = document.querySelector('.banner-carousel');
+            let interval;
+
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(interval);
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                interval = setInterval(nextSlide, 5000);
+            });
+        </script>
+        {% if request.user.is_authenticated %} 
+        <div class="pattern-section">
+            <div class="inputfield">
+                <h1>Upload Your Sales Data for<br><span>Instant Analysis</span></h1> 
+            </div>
+                
+            <!-- /* From Uiverse.io by Yaya12085 */  -->
+            <div class="center-wrapper">
+                <div class="whitecards">
+                    <!-- Create Dashboard Section - Temporarily Disabled
+                    <div class="cookie-card">
+                        <span class="title"> Create Dashboard</span>
+                        <p class="description">Explore the latest trends in your data with just one click </p>
+                        <form class="actions" method="GET" enctype="multipart/form-data" action="{% url 'dashboard' %}">
+                            {% csrf_token %}
+                            
+                            <button class="accept" type="submit" style="margin-top: 0px;background-color: rgb(31, 75, 151);">
+                                Go To Dashboard
+                            </button>
+                        </form>
+                    </div>
+                    -->
+
+                    {% if profile.is_branchmanager %}
+                    <div class="cookie-card">
+                        <span class="title">🍪 Dataset Visualization</span>
+                        <p class="description">Upload your dataset to visualize and analyze the data. Its fast and simple </p>
+                        <form class="actions" method="POST" enctype="multipart/form-data" action="{% url 'home' %}">
+                            {% csrf_token %}
+                            <button class="pref">
+                                <input type="file" name="csv_file" class="inp" required style="margin-top:10px;padding:8px;width:210px;border:1px solid rgb(228, 228, 228);outline:none;border-radius:10px;border:1px solid rgb(233, 233, 233);background-color:white;-webkit-box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);-moz-box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);font-size: 11px;">
+                            </button>
+                            <button class="accept" type="submit" style="margin-top: 10px;background-color: rgb(31, 75, 151);">
+                                Upload
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="cookie-card">
+                        <span class="title">🍪 Dataset Visualization</span>
+                        <p class="description">Upload your dataset to visualize and analyze the data. Its fast and simple </p>
+                        <form class="actions" method="POST" enctype="multipart/form-data" action="{% url 'home' %}">
+                            {% csrf_token %}
+                            <button class="pref">
+                                <input type="file" name="csv_file" class="inp" required style="margin-top:10px;padding:8px;width:210px;border:1px solid rgb(228, 228, 228);outline:none;border-radius:10px;border:1px solid rgb(233, 233, 233);background-color:white;-webkit-box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);-moz-box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);box-shadow:2px 3px 8px 0px rgba(0,0,0,0.07);font-size: 11px;">
+                            </button>
+                            <button class="accept" type="submit" style="margin-top: 10px;background-color: rgb(31, 75, 151);">
+                                Upload
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        </div>
+    </div>
+     <div class="popup">
+        <h3>Welcome Choose here signup</h3>
+        <img src="{% static 'images/7799e37add3fc4206b003e9807c302e1-removebg-preview.png'%}"/>
+        <div class="linkss"><a href="{%  url 'signup' %}"><button class="btnu">Branch </button></a>
+        <a href="{%  url 'sales' %}"><button class="btnss">Sales / Marketing </button></a></div>
+     </div>
+     </div>
+     <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About DataSegmentor</h3>
+                <p>Empowering businesses with advanced analytics and machine learning solutions for better customer insights and data-driven decisions.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Customer Acquisition</a></li>
+                    <li><a href="{% url 'segmentation' %}"><i class="fas fa-chevron-right"></i> Data Segmentation</a></li>
+                    <li><a href="{% url 'help' %}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                    <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#"><i class="fas fa-map-marker-alt"></i> 3301 Analytics Street, Data City, DC 4545</a>
+                    </li>
+                    <li>
+                        <a href="tel:+919876543210"><i class="fas fa-phone"></i> +91 9876543210</a>
+                    </li>
+                    <li>
+                        <a href="mailto:support@datasegmentor.com"><i class="fas fa-envelope"></i> support@datasegmentor.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} DataSegmentor. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="{% static 'js/index.js'%}"></script>
+</body>
+</html>

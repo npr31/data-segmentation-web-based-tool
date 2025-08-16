@@ -1,0 +1,456 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Generated Chart</h1>
+    <img src="data:image/png;base64,{{ chart }}" alt="Chart">
+    
+    <h2>Statistics</h2>
+    <p><strong>X Column:</strong></p>
+    <ul>
+        <li>Mean: {{ x_stats.mean }}</li>
+        <li>Median: {{ x_stats.median }}</li>
+        <li>Mode: {{ x_stats.mode }}</li>
+    </ul>
+    
+    <p><strong>Y Column:</strong></p>
+    <ul>
+        <li>Mean: {{ y_stats.mean }}</li>
+        <li>Median: {{ y_stats.median }}</li>
+        <li>Mode: {{ y_stats.mode }}</li>
+    </ul>
+
+   
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Columns</title>
+</head>
+<body>
+    <h1>Select Columns for Chart</h1>
+    <form method="post" action="{% url 'generate_chart' %}">
+        {% csrf_token %}
+        <label for="x_column">X Column:</label>
+        <select name="x_column" id="x_column">
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="y_column">Y Column:</label>
+        <select name="y_column" id="y_column">
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="chart_type">Chart Type:</label>
+        <select name="chart_type" id="chart_type">
+            <option value="line">Line</option>
+            <option value="bar">Bar</option>
+            <option value="scatter">Scatter</option>
+            <option value="histogram">Histogram</option>
+            <option value="box">Box Plot</option>
+            <option value="pie">Pie Chart</option>
+            <option value="heatmap">Heatmap</option>
+        </select>
+
+        <label for="color">Color:</label>
+        <input type="text" name="color" id="color" placeholder="e.g., blue, #FF5733">
+
+        <button type="submit">Generate Chart</button>
+    </form>
+</body>
+</html> -->
+
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart - DataSegmentor</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- Add Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        #chart-container {
+            width: 180%;
+            height: 80vh;
+            margin: 20px auto;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .chart-controls {
+            margin: 20px auto;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: fit-content;
+        }
+        .chart-controls button {
+            margin: 0 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            min-width: 120px;
+        }
+        .chart-controls button:hover {
+            background: #45a049;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+        }
+        .stat-box h3 {
+            margin: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .stat-box p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .chart-wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: auto;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 100;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding: 0 20px;
+        }
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        .footer-section h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .footer-section p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        .social-icon {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            background: #4CAF50;
+            transform: translateY(-3px);
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #4CAF50;
+            transform: translateX(5px);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .footer-bottom p {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .btn {
+            font-weight: 400;
+            color: #090909;
+            padding: 0.7em 1.7em;
+            font-size: 18px;
+            border-radius: 0.5em;
+            background: #e8e8e8;
+            cursor: pointer;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s;
+            box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+        }
+        .btn:hover {
+            box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="content-wrapper">
+            <div class="container">
+                <div class="contain">
+                    <div class="navbar">
+                        <div class="sideimage">
+                            <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+                        </div>
+                        <center>
+                            <div class="centercontent">
+                                <a href="{% url 'home' %}"><h4>Home</h4></a>
+                                <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                                <a href="{% url 'segmentation' %}"><h4>Data Segmentation</h4></a>
+                                <a href="{% url 'help' %}"><h4>Help</h4></a>
+                                <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                            </div>
+                        </center>
+                        <div class="sidecontent">
+                            {% if request.user.is_authenticated %}
+                            <a href="{% url 'logout' %}">
+                                <button class="Logout">Logout</button>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'login' %}">
+                                <button class="login">Login</button>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="log">
+                        <center>
+                            <div class="banner-slide" style="position: absolute; width: 100%; height: 100%; left: 0; background-color: #c9c9c9; background-image: radial-gradient(rgba(27, 26, 26, 0.171) 2px, transparent 0); background-size: 30px 30px; background-position: -5px -5px;"></div>
+                        </center>
+                        <div style="position: relative;z-index: 10;">
+                            {% if is_3d %}
+                                <div class="chart-wrapper">
+                                    <div id="chart-container"></div>
+                                    <div class="chart-controls">
+                                        <button onclick="resetView()">Reset View</button>
+                                        <button onclick="toggleRotation()">Toggle Rotation</button>
+                                        <button onclick="downloadChart()">Download Chart</button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <img src="data:image/png;base64,{{ chart }}" alt="Chart" style="max-width: 100%; height: auto;">
+                            {% endif %}
+
+                            {% if x_stats or y_stats %}
+                            <div class="stats-container">
+                                {% if x_stats %}
+                                <div class="stat-box">
+                                    <h3>X-Axis Statistics</h3>
+                                    <p>Mean: {{ x_stats.mean|floatformat:2 }}</p>
+                                    <p>Median: {{ x_stats.median|floatformat:2 }}</p>
+                                    <p>Mode: {{ x_stats.mode }}</p>
+                                </div>
+                                {% endif %}
+                                {% if y_stats %}
+                                <div class="stat-box">
+                                    <h3>Y-Axis Statistics</h3>
+                                    <p>Mean: {{ y_stats.mean|floatformat:2 }}</p>
+                                    <p>Median: {{ y_stats.median|floatformat:2 }}</p>
+                                    <p>Mode: {{ y_stats.mode }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="action-buttons">
+                                <button onclick="history.back()" class="btn">Go Back</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About DataSegmentor</h3>
+                    <p>Empowering businesses with advanced analytics and machine learning solutions for better customer insights and data-driven decisions.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Customer Acquisition</a></li>
+                        <li><a href="{% url 'segmentation' %}"><i class="fas fa-chevron-right"></i> Data Segmentation</a></li>
+                        <li><a href="{% url 'help' %}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 DataSegmentor. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    {% if is_3d %}
+    <script>
+        let isRotating = false;
+        let rotationInterval;
+
+        // Parse the chart JSON and create the plot
+        const chartData = JSON.parse('{{ chart_json|safe }}');
+        
+        // Update layout settings for better fit
+        chartData.layout.width = null;  // Let it be responsive
+        chartData.layout.height = null; // Let it be responsive
+        chartData.layout.margin = {l: 0, r: 0, t: 40, b: 0};
+        chartData.layout.autosize = true;
+        
+        // Add responsive layout
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToAdd: ['resetScale2d'],
+            modeBarButtonsToRemove: ['lasso2d', 'select2d']
+        };
+
+        // Create the plot with the updated settings
+        Plotly.newPlot('chart-container', chartData.data, chartData.layout, config);
+
+        // Make the chart responsive to window resize
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('chart-container');
+        });
+
+        // Function to reset the 3D view
+        function resetView() {
+            const chart = document.getElementById('chart-container');
+            if (chart && chart._fullData) {
+                Plotly.relayout(chart, {
+                    'scene.camera': {
+                        'eye': {x: 1.5, y: 1.5, z: 1.5},
+                        'center': {x: 0, y: 0, z: 0}
+                    }
+                });
+            }
+        }
+
+        // Function to toggle rotation
+        function toggleRotation() {
+            const chart = document.getElementById('chart-container');
+            if (!chart || !chart._fullData) return;
+
+            if (isRotating) {
+                clearInterval(rotationInterval);
+                isRotating = false;
+            } else {
+                let angle = 0;
+                rotationInterval = setInterval(() => {
+                    angle += 1;
+                    Plotly.relayout(chart, {
+                        'scene.camera': {
+                            'eye': {
+                                x: 1.5 * Math.cos(angle * Math.PI / 180),
+                                y: 1.5 * Math.sin(angle * Math.PI / 180),
+                                z: 1.5
+                            }
+                        }
+                    });
+                }, 50);
+                isRotating = true;
+            }
+        }
+
+        // Function to download chart as PNG
+        function downloadChart() {
+            const chart = document.getElementById('chart-container');
+            if (chart && chart._fullData) {
+                Plotly.downloadImage(chart, {
+                    format: 'png',
+                    filename: '3d_chart',
+                    height: 800,
+                    width: 1200
+                });
+            }
+        }
+    </script>
+    {% endif %}
+</body>
+</html>

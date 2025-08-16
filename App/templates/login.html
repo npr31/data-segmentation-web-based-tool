@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="contain">
+            <div class="navbar">
+                <div class="sideimage">
+                    <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+                </div>
+                <center>
+                    <div class="centercontent">
+                        <a href="{% url 'home' %}"><h4>Home</h4></a>
+                        <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                        <a href="{% url 'segmentation' %}"><h4>Customer Segmentation</h4></a>
+                        <a href="{% url 'help' %}"><h4>Help</h4></a>
+                        <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                    </div>
+                </center>
+                <div class="sidecontent">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <button class="Logout">Logout</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="login">Login</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="login-container">
+                <div class="toppart">
+                    <h1>LOG IN</h1>
+                </div>
+                <div class="midpart">
+                    <form method="post" action="{% url 'login' %}" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="username" required placeholder="username" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" required placeholder="password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                        </div>
+                        <button type="submit">LOG IN</button>
+                        <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About DataSegmentor</h3>
+                <p>Empowering businesses with advanced analytics and machine learning solutions for better customer insights and data-driven decisions.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Customer Acquisition</a></li>
+                    <li><a href="{% url 'segmentation' %}"><i class="fas fa-chevron-right"></i> Data Segmentation</a></li>
+                    <li><a href="{% url 'help' %}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                    <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#"><i class="fas fa-map-marker-alt"></i> 3301 Analytics Street, Data City, DC 4545</a>
+                    </li>
+                    <li>
+                        <a href="tel:+919876543210"><i class="fas fa-phone"></i> +91 9876543210</a>
+                    </li>
+                    <li>
+                        <a href="mailto:support@datasegmentor.com"><i class="fas fa-envelope"></i> support@datasegmentor.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} DataSegmentor. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+

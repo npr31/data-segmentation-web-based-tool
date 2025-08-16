@@ -1,0 +1,489 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - DataSegmentor</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .container {
+            background-color: #bebebe;
+            background-image: radial-gradient(rgba(5, 5, 5, 0.171) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1F4B97 0%, #1a3f80 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .contact-header p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .contact-form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-info-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1F4B97;
+        }
+
+        .submit-button {
+            background: #1F4B97;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background: #163a75;
+        }
+
+        .contact-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .contact-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: #1F4B97;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .contact-text {
+            flex-grow: 1;
+        }
+
+        .contact-text h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .contact-text p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: #1F4B97;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            text-decoration: none;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            background: #163a75;
+        }
+
+        .map-section {
+            margin-top: 40px;
+            padding: 0 20px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .map-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .map-frame {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 60px 0 30px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: #1F4B97;
+        }
+
+        .footer-section p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: #1F4B97;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: #1F4B97;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #333;
+            color: #666;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="contain">
+            <div class="navbar">
+                <div class="sideimage">
+                    <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+                </div>
+                <center>
+                    <div class="centercontent">
+                        <a href="{% url 'home' %}"><h4>Home</h4></a>
+                        <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                        <a href="{% url 'segmentation' %}"><h4>Data Segmentation</h4></a>
+                        <a href="{% url 'help' %}"><h4>Help</h4></a>
+                        <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                    </div>
+                </center>
+                <div class="sidecontent">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <button class="Logout">Logout</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="login">Login</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="contact-header">
+                <h1>Get in Touch</h1>
+                <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+
+            <div class="contact-container">
+                <!-- Contact Form Section - Currently disabled
+                     This section contains:
+                     - Name input field
+                     - Email input field
+                     - Subject input field
+                     - Message textarea
+                     - Submit button
+                     
+                     To enable the form:
+                     1. Remove the comment tags
+                     2. Add form processing logic in backend
+                     3. Configure email settings
+                -->
+                <!--
+                <div class="contact-form-section">
+                    <h2>Send us a Message</h2>
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="Your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required placeholder="Message subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required placeholder="Your message"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                </div>
+                -->
+
+                <div class="contact-info-section">
+                    <h2>Contact Information</h2>
+                    <ul class="contact-info-list">
+                        <li class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h3>Address</h3>
+                                <p>3301 Analytics Street, Data City, DC 4545</p>
+                            </div>
+                        </li>
+                        <li class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h3>Phone</h3>
+                                <p>+91 9876543210</p>
+                            </div>
+                        </li>
+                        <li class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h3>Email</h3>
+                                <p>support@datasegmentor.com</p>
+                            </div>
+                        </li>
+                       
+                    </ul>
+
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-section">
+                <div class="map-container">
+                    <h2>Our Location</h2>
+                    <iframe 
+                        class="map-frame"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1009.6244980932449!2d76.1899894380993!3d10.506546356728117!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7ee05457e94e1%3A0xd3243fc43750fb0f!2sDr.%20John%20Matthai%20Centre!5e1!3m2!1sen!2sin!4v1747510564018!5m2!1sen!2sin"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About DataSegmentor</h3>
+                <p>Empowering businesses with advanced analytics and machine learning solutions for better customer insights and data-driven decisions.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Customer Acquisition</a></li>
+                    <li><a href="{% url 'segmentation' %}"><i class="fas fa-chevron-right"></i> Data Segmentation</a></li>
+                    <li><a href="{% url 'help' %}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                    <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#"><i class="fas fa-map-marker-alt"></i> 3301 Analytics Street, Data City, DC 4545</a>
+                    </li>
+                    <li>
+                        <a href="tel:+919876543210"><i class="fas fa-phone"></i> +91 9876543210</a>
+                    </li>
+                    <li>
+                        <a href="mailto:support@datasegmentor.com"><i class="fas fa-envelope"></i> support@datasegmentor.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} DataSegmentor. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="{% static 'js/index.js'%}"></script>
+</body>
+</html> 

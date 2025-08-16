@@ -1,0 +1,425 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - SalesInsight</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .container {
+            background-color: #bebebe;
+            background-image: radial-gradient(rgba(5, 5, 5, 0.171) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .help-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1F4B97 0%, #1a3f80 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .help-header p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .help-sections {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .help-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(31, 75, 151, 0.15);
+        }
+
+        .help-card-icon {
+            font-size: 2.5em;
+            color: #1F4B97;
+            margin-bottom: 20px;
+        }
+
+        .help-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .help-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #1F4B97;
+        }
+
+        .help-footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f1f4f9;
+            margin-top: 40px;
+        }
+
+        .contact-support {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #1F4B97;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s ease;
+        }
+
+        .contact-support:hover {
+            background: #163a75;
+        }
+
+        .step-guide {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 1000px;
+        }
+
+        .step-guide h2 {
+            color: #1F4B97;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #1F4B97;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 60px 0 30px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: #1F4B97;
+        }
+
+        .footer-section p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: #1F4B97;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: #1F4B97;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #333;
+            color: #666;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="contain">
+            <div class="navbar">
+                <div class="sideimage">
+                    <h4 style="margin: 20px;">Data<span>Segmentor</span></h4>
+                </div>
+                <center>
+                    <div class="centercontent">
+                        <a href="{% url 'home' %}"><h4>Home</h4></a>
+                        <a href="{% url 'prediction' %}"><h4>Customer Acquisition Prediction</h4></a>
+                        <a href="{% url 'segmentation' %}"><h4>Data Segmentation</h4></a>
+                        <a href="{% url 'help' %}"><h4>Help</h4></a>
+                        <a href="{% url 'contact' %}"><h4>Contact</h4></a>
+                    </div>
+                </center>
+                <div class="sidecontent">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <button class="Logout">Logout</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="login">Login</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="help-header">
+                <h1>Welcome to DataSegmentor Help Center</h1>
+                <p>Your comprehensive guide to understanding and utilizing our powerful customer analytics platform</p>
+            </div>
+
+            <div class="help-sections">
+                <div class="help-card">
+                    <div class="help-card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2>Customer Acquisition Prediction</h2>
+                    <p>Predict which customers are most likely to convert using our advanced machine learning model.</p>
+                    <ul class="feature-list">
+                        <li>Upload customer data in CSV format</li>
+                        <li>Get detailed prediction analytics</li>
+                        <li>View response rates and model accuracy</li>
+                        <li>Generate gain and lift charts</li>
+                        <li>Download comprehensive reports</li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <div class="help-card-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h2>Data Segmentation</h2>
+                    <p>Segment your customer base into meaningful groups for targeted marketing strategies.</p>
+                    <ul class="feature-list">
+                        <li>Automatic customer clustering</li>
+                        <li>Demographic analysis</li>
+                        <li>Behavior pattern identification</li>
+                        <li>Segment visualization</li>
+                        <li>Export segmentation results</li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <div class="help-card-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h2>Key Benefits</h2>
+                    <p>Maximize your marketing ROI with our data-driven insights.</p>
+                    <ul class="feature-list">
+                        <li>Reduce customer acquisition costs</li>
+                        <li>Improve campaign targeting</li>
+                        <li>Optimize marketing strategies</li>
+                        <li>Increase conversion rates</li>
+                        <li>Make data-driven decisions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step-guide">
+                <h2>How to Get Started</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Upload Data</h3>
+                        <p>Upload your customer dataset in CSV format</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Choose Analysis</h3>
+                        <p>Select prediction or segmentation analysis</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Get Insights</h3>
+                        <p>View detailed analytics and visualizations</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Take Action</h3>
+                        <p>Download reports and implement strategies</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-footer">
+                <p>Still have questions? We're here to help!</p>
+                <a href="{% url 'contact' %}" class="contact-support">Contact Support</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About DataSegmentor</h3>
+                <p>Empowering businesses with advanced analytics and machine learning solutions for better customer insights and data-driven decisions.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Customer Acquisition</a></li>
+                    <li><a href="{% url 'segmentation' %}"><i class="fas fa-chevron-right"></i> Data Segmentation</a></li>
+                    <li><a href="{% url 'help' %}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                    <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#"><i class="fas fa-map-marker-alt"></i> 3301 Analytics Street, Data City, DC 4545</a>
+                    </li>
+                    <li>
+                        <a href="tel:+919876543210"><i class="fas fa-phone"></i> +91 9876543210</a>
+                    </li>
+                    <li>
+                        <a href="mailto:support@datasegmentor.com"><i class="fas fa-envelope"></i> support@datasegmentor.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} DataSegmentor. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>

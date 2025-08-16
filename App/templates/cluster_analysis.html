@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Cluster Analysis</h1>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="clusterAnalysisForm" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="dataInput">Upload your data (CSV format):</label>
+                            <input type="file" class="form-control" id="dataInput" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Analyze Clusters</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Analysis Results</h3>
+                    <div id="analysisResults" class="mt-3">
+                        <!-- Results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('clusterAnalysisForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById('dataInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select a file');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('data', file);
+    
+    try {
+        const response = await fetch('{% url "analyze_clusters" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            document.getElementById('analysisResults').innerHTML = data.analysis;
+        } else {
+            document.getElementById('analysisResults').innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+        }
+    } catch (error) {
+        document.getElementById('analysisResults').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+    }
+});
+</script>
+{% endblock %} 
